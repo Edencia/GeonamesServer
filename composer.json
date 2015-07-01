@@ -1,5 +1,5 @@
 {
-    "name": "ghislainf/geonames-server",
+    "name": "edencia/geonames-server",
     "description": "ZF2 module, index geonames data & provides a search API using Elasticsearch",
     "type": "module",
     "license": "MIT",
@@ -10,10 +10,10 @@
         "elasticsearch",
         "module"
     ],
-    "homepage": "https://github.com/ghislainf/GeonamesServer",
+    "homepage": "https://github.com/Edencia/GeonamesServer",
     "authors": [
         {
-            "name": "Ghislain de Fontenay",
+            "name": "Ghislain de Fontenay & Edencia",
             "homepage": "http://www.ghislainf.me/",
             "role": "Developer"
         }
