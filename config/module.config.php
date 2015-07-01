@@ -3,7 +3,7 @@ return array(
     'geonames_server' => array(
         'installer' => array(
             'dataLocalPath'  => 'data/geonamesServer',
-            'translateName' => false,
+            'translateName' => true,
             'featureCodeAllowed' => array(
                 'countries' => array(
                     'PCL', 'PCLD', 'PCLF', 'PCLI',
