@@ -32,8 +32,8 @@ return array(
                 'options' => array(
                     'route'    => '/geonames',
                     'defaults' => array(
-                        'controller' => 'GeonamesServer\Controller\Demo',
-                        'action' => 'index',
+                        'controller' => 'GeonamesServer\Controller\Api',
+                        'action' => 'search',
                     )
                 ),
                 'may_terminate' => true,

@@ -12,12 +12,41 @@ class ApiController extends AbstractActionController
      */
     public function searchAction()
     {
-        $query = $this->params()->fromRoute('query');
-        $page  = $this->params()->fromRoute('page', 1);
-        $size  = $this->params()->fromRoute('size', 10);
+        $results = array();
+        $serviceLocator = $this->getServiceLocator();
+        $request = $this->getRequest();
+        $params = $request->getQuery()->toArray();
 
+        if (empty($params) || (empty($params['Geonames']['name']) && empty($params['Geonames']['id'])))
+            return $this->redirect()->toRoute('project/view');
         $elasticsearch = $this->getServiceLocator()->get('GeonamesServer\Service\Elasticsearch');
-        return new JsonModel($elasticsearch->search($query, $page, $size));
+
+        if (!empty($params['Geonames']['name'])) {
+            $query = $params['Geonames']['name'];
+            $page  = $this->params()->fromRoute('page', 1);
+            $size  = $this->params()->fromRoute('size', 10);
+
+            $datas = $elasticsearch->search($query, $page, $size);
+            $elements = $datas['response']['hits'];
+        } else {
+            $datas = $elasticsearch->getDocuments($params['Geonames']['id']);
+            $elements = $datas['response'];
+        }
+
+        if ($datas['success']) {
+            foreach ($elements as $k => $v) {
+                $results[] = array(
+                    'id' => $v['geonameid'],
+                    'type' => 'zone',
+                    'name' => $v['name'],
+                    'validated' => true
+                );
+            }
+        }
+
+        return new JsonModel(array(
+            'results' => $results
+        ));
     }
 
     /**
