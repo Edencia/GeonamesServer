@@ -38,21 +38,21 @@ return array(
                 ),
                 'may_terminate' => true,
                 'child_routes' => array(
-                    'geonames-search' => array(
-                        'type'    => 'Segment',
-                        'options' => array(
-                            'route'    => '/_search/:query[/:page][/:size]',
-                            'constraints' => array(
-                                'query' => '[^/]{3,}',
-                                'page'  => '[0-9]+',
-                                'size'  => '[0-9]+'
-                            ),
-                            'defaults' => array(
-                                'controller' => 'GeonamesServer\Controller\Api',
-                                'action' => 'search',
-                            )
-                        )
-                    ),
+                    // 'geonames-search' => array(
+                    //     'type'    => 'Segment',
+                    //     'options' => array(
+                    //         'route'    => '/_search/:query[/:page][/:size]',
+                    //         'constraints' => array(
+                    //             'query' => '[^/]{3,}',
+                    //             'page'  => '[0-9]+',
+                    //             'size'  => '[0-9]+'
+                    //         ),
+                    //         'defaults' => array(
+                    //             'controller' => 'GeonamesServer\Controller\Api',
+                    //             'action' => 'search',
+                    //         )
+                    //     )
+                    // ),
                     'geonames-get' => array(
                         'type'    => 'Segment',
                         'options' => array(
