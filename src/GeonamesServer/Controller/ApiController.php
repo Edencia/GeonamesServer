@@ -50,6 +50,8 @@ class ApiController extends AbstractActionController
     }
 
     public function formatName($response) {
+        if (!isset($response['parents']) || empty($response['parents']))
+            return $response['name'];
         $result = '';
         $result .= $response['name'] .', ';
         $parents = $response['parents'];
