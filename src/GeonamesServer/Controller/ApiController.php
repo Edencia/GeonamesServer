@@ -38,7 +38,7 @@ class ApiController extends AbstractActionController
                 $results[] = array(
                     'id' => $v['geonameid'],
                     'type' => 'zone',
-                    'name' => $v['name'],
+                    'name' => $this->formatName($v),
                     'validated' => true
                 );
             }
@@ -47,6 +47,17 @@ class ApiController extends AbstractActionController
         return new JsonModel(array(
             'results' => $results
         ));
+    }
+
+    public function formatName($response) {
+        $result = '';
+        $result .= $response['name'] .', ';
+        $parents = $response['parents'];
+        foreach ($parents as $parent) {
+            $result .= $parent['name'] .', ';
+        }
+        $result = substr($result, 0, -2);
+        return $result;
     }
 
     /**
