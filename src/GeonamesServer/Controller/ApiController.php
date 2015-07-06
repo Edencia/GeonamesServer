@@ -27,10 +27,12 @@ class ApiController extends AbstractActionController
             $size  = $this->params()->fromRoute('size', 10);
 
             $datas = $elasticsearch->search($query, $page, $size);
-            $elements = $datas['response']['hits'];
+            if ($datas['success'])
+                $elements = $datas['response']['hits'];
         } else {
             $datas = $elasticsearch->getDocuments($params['Geonames']['id']);
-            $elements = $datas['response'];
+            if ($datas['success'])
+                $elements = $datas['response'];
         }
 
         if ($datas['success']) {
@@ -54,9 +56,12 @@ class ApiController extends AbstractActionController
             return $response['name'];
         $result = '';
         $result .= $response['name'] .', ';
-        $parents = $response['parents'];
-        foreach ($parents as $parent) {
-            $result .= $parent['name'] .', ';
+        if (isset($response['parents'])) {
+            $parents = $response['parents'];
+            foreach ($parents as $parent) {
+                // if ($parent['type'] == 'country')
+                    $result .= $parent['name'] .', ';
+            }
         }
         $result = substr($result, 0, -2);
         return $result;
