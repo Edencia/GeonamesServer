@@ -38,6 +38,16 @@ return array(
                 ),
                 'may_terminate' => true,
                 'child_routes' => array(
+                    'city' => array (
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/city',
+                            'defaults' => array(
+                                'controller' => 'GeonamesServer\Controller\Api',
+                                'action' => 'searchCity',
+                            )
+                        ),
+                    ),
                     'geonames-search' => array(
                         'type'    => 'Segment',
                         'options' => array(

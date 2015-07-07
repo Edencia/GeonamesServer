@@ -92,6 +92,33 @@ class Elasticsearch
     }
 
     /**
+     * Get Document Name for personal usage
+     * @param string $geonamesIds ex : 4587 OR 4587
+     * @return string
+     **/
+    public function getDocumentName($geonamesId) {
+        $documents = $this->getDocuments($geonamesId);
+
+        return $this->formatName($documents['response'][$geonamesId]);
+    }
+
+    public function formatName($response, $complet = false) {
+        if (!isset($response['parents']) || empty($response['parents']))
+            return $response['name'];
+        $result = '';
+        $result .= $response['name'] .', ';
+        if (isset($response['parents'])) {
+            $parents = $response['parents'];
+            foreach ($parents as $parent) {
+                if ($complet || $parent['type'] == 'country')
+                    $result .= $parent['name'] .', ';
+            }
+        }
+        $result = substr($result, 0, -2);
+        return $result;
+    }
+
+    /**
      * Get data of ids documents
      * @param string $geonamesIds ex : 4587 OR 4587,9087,5426
      * @return array
@@ -137,7 +164,7 @@ class Elasticsearch
      * @param int $limit
      * @return array
      */
-    public function search($string, $page = 1, $limit = 10)
+    public function search($string, $page = 1, $limit = 10, $city = false)
     {
         // Filter string search
         $this->strSearch = array();
@@ -164,7 +191,7 @@ class Elasticsearch
                     'name' => array(
                         'like_text' => $this->strSearch['string'],
                         'max_query_terms' => 12
-                    )
+                    ),
                 )
             );
 
@@ -185,8 +212,15 @@ class Elasticsearch
             );
         }
 
+        if ($city == true) {
+            $query['filter'] = array (
+                'term' => array ('type' => 'city')
+            );
+        }
+
         // Run query
         $response = $this->sendRequest(Request::METHOD_POST, '_search', Json::encode($query));
+
         $json = array('success' => $response->isSuccess());
         if ($json['success']) {
             $content = Json::decode($response->getContent(), Json::TYPE_ARRAY);

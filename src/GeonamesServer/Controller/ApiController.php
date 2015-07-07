@@ -10,7 +10,7 @@ class ApiController extends AbstractActionController
      * Search
      * @route /geonames/_search/:query[/:page][/:size]
      */
-    public function searchAction()
+    public function searchAction($city = false)
     {
         $results = array();
         $serviceLocator = $this->getServiceLocator();
@@ -26,7 +26,7 @@ class ApiController extends AbstractActionController
             $page  = $this->params()->fromRoute('page', 1);
             $size  = $this->params()->fromRoute('size', 10);
 
-            $datas = $elasticsearch->search($query, $page, $size);
+            $datas = $elasticsearch->search($query, $page, $size, $city);
             if ($datas['success'])
                 $elements = $datas['response']['hits'];
         } else {
@@ -39,8 +39,8 @@ class ApiController extends AbstractActionController
             foreach ($elements as $k => $v) {
                 $results[] = array(
                     'id' => $v['geonameid'],
-                    'type' => 'zone',
-                    'name' => $this->formatName($v),
+                    'type' => $v['type'],
+                    'name' => $elasticsearch->formatName($v, !$city),
                     'validated' => true
                 );
             }
@@ -51,20 +51,8 @@ class ApiController extends AbstractActionController
         ));
     }
 
-    public function formatName($response) {
-        if (!isset($response['parents']) || empty($response['parents']))
-            return $response['name'];
-        $result = '';
-        $result .= $response['name'] .', ';
-        if (isset($response['parents'])) {
-            $parents = $response['parents'];
-            foreach ($parents as $parent) {
-                // if ($parent['type'] == 'country')
-                    $result .= $parent['name'] .', ';
-            }
-        }
-        $result = substr($result, 0, -2);
-        return $result;
+    public function searchCityAction () {
+        return $this->searchAction(true);
     }
 
     /**
